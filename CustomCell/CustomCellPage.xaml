@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:local="clr-namespace:CustomCell" 
+    x:Class="CustomCell.CustomCellPage"
+    xmlns:swipe="clr-namespace:CustomCell.Cells">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" WinPhone="20,20,20,20" />
+    </ContentPage.Padding>
+	<Label Text="Welcome to Xamarin Forms!" VerticalOptions="Center" HorizontalOptions="Center" />
+    <ListView x:Name="listView" CachingStrategy="RecycleElement">
+        <ListView.ItemTemplate>
+                <DataTemplate>
+                    <swipe:SwipeCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Name}"/>
+                            <Label Text="{Binding Category}" FontSize="Small" TextColor="Gray"/> 
+
+                        </StackLayout>
+                        <swipe:SwipeCell.RightContextActions>
+                            <local:ActionMenuItem Text="Right1"/>
+                            <local:ActionMenuItem Text="Right2"/>
+                            <local:ActionMenuItem Text="Right3"/>
+                            <local:ActionMenuItem Text="Right4"/>
+                        </swipe:SwipeCell.RightContextActions>
+                        <swipe:SwipeCell.LeftContextActions>
+                            <local:ActionMenuItem Text="Left1"/>
+                            <local:ActionMenuItem Text="Left2"/>
+                            <local:ActionMenuItem Text="Left3"/>
+                            <local:ActionMenuItem Text="Left4"/>
+                        </swipe:SwipeCell.LeftContextActions>
+                    </swipe:SwipeCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</ContentPage>
