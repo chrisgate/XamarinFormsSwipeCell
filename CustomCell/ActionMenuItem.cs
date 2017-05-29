@@ -41,7 +41,7 @@ namespace CustomCell
 
 		public static readonly BindableProperty IsEnabledProperty = BindableProperty.Create("IsEnabled", typeof(bool), typeof(ActionMenuItem), true);
 
-        public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create("BackgroundColor", typeof(Color), typeof(ActionMenuItem), Color.Default);
+        public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create("BackgroundColor", typeof(Color), typeof(ActionMenuItem), Color.LightGray);
 
 		public string IsEnabledPropertyName
 		{

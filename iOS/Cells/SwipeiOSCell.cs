@@ -157,9 +157,6 @@ namespace CustomCell.iOS
 
 			nativeCell.Frame = new RectangleF(0, 0, width, height);
 			nativeCell.SetNeedsLayout();
-			
-			//this.Frame = new RectangleF(0, 0, width, height);
-            //this.SetNeedsLayout();
 
 			var handler = new PropertyChangedEventHandler(OnMenuItemPropertyChanged);
 
@@ -206,8 +203,6 @@ namespace CustomCell.iOS
                 ((INotifyCollectionChanged)_cell.RightContextActions).CollectionChanged += OnContextItemsChanged;
 			}
 
-			//var isOpen = false;
-
 			if (_scroller == null)
 			{
 				_scroller = new UIScrollView(new RectangleF(0, 0, width, height));
@@ -221,7 +216,6 @@ namespace CustomCell.iOS
 			else
 			{
 				_scroller.Frame = new RectangleF(0, 0, width, height);
-				//isOpen = ScrollDelegate.IsOpen;
 
 				for (var i = 0; i < _rightButtons.Count; i++)
 				{
@@ -307,10 +301,11 @@ namespace CustomCell.iOS
 			}
 
             _scroller.Delegate = new ContextScrollViewDelegate(container, _rightButtons, _leftButtons, IsRightOpen, IsLeftOpen);
+            //slider area reset
             _scroller.ContentInset = new UIEdgeInsets(0.0f, leftTotalWidth, 0.0f, rightTotalWidth);
             _scroller.ContentSize =  new SizeF(totalWidth, height);
 
-            //TODO : check conditional
+            //TODO : if 문 조건이 정확한지 확인해야함.
             if (IsRightOpen && recycling)
                 _scroller.SetContentOffset(new PointF(ScrollDelegate.RightButtonsWidth , 0), false);
             else if (IsLeftOpen && recycling)
@@ -358,7 +353,7 @@ namespace CustomCell.iOS
 					((ContextScrollViewDelegate)_scroller.Delegate).ClosedCallback = null;
 				};
 
-				_scroller.SetContentOffset(new PointF(0, 0), true);
+				_scroller.SetContentOffset(CGPoint.Empty, true);
 			}
 			else
 				ReloadRowCore();
@@ -608,11 +603,15 @@ namespace CustomCell.iOS
         void OnRightButtonActivated(object sender, EventArgs e)
 		{
 			var button = (UIButton)sender;
-			if (button.Tag == -1)
+            if (button.Tag == -1)
+            {
+				//More 버튼 클릭시 스크롤 포지션 동작참조 : GrobalCloseContextGestureRecognizer.cs => OnShouldReceiveTouch
+				//_scroller.SetContentOffset(CGPoint.Empty, true);
 				ActivateMoreRight();
+            }
 			else
 			{
-				_scroller.SetContentOffset(new PointF(0, 0), true);
+				_scroller.SetContentOffset(CGPoint.Empty, true);
 				_cell.RightContextActions[(int)button.Tag].Activate();
 			}
 		}
@@ -628,10 +627,9 @@ namespace CustomCell.iOS
 			}
 
 			var frame = _rightMoreButton.Frame;
-
             var x = frame.X - _scroller.ContentOffset.X;
 
-            //TODO : Check IndexPathForCell -> return null
+            //TODO : 원본 소스와 달리 IndexPathForCell 을 호출 할 경우 값이 반환되지 않음.
 			//var path = _tableView.IndexPathForCell(this);
             var path = _tableView.IndexPathForRowAtPoint(this.Center);
 			var rowPosition = _tableView.RectForRowAtIndexPath(path);
@@ -640,7 +638,6 @@ namespace CustomCell.iOS
 			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
 				var actionSheet = new MoreActionSheetController();
-
 				for (var i = 0; i < _cell.RightContextActions.Count; i++)
 				{
 					if (displayed.Contains(i))
@@ -650,7 +647,7 @@ namespace CustomCell.iOS
 					var weakItem = new WeakReference<ActionMenuItem>(item);
 					var action = UIAlertAction.Create(item.Text, UIAlertActionStyle.Default, a =>
 					{
-						_scroller.SetContentOffset(new PointF(0, 0), true);
+						_scroller.SetContentOffset(CGPoint.Empty, true);
 						ActionMenuItem mi;
 						if (weakItem.TryGetTarget(out mi))
 							mi.Activate();
@@ -736,11 +733,14 @@ namespace CustomCell.iOS
         void OnLeftButtonActivated(object sender, EventArgs e)
 		{
 			var button = (UIButton)sender;
-			if (button.Tag == -1)
+            if (button.Tag == -1)
+            {
+				//_scroller.SetContentOffset(CGPoint.Empty, true);
 				ActivateMoreLeft();
+            }
 			else
 			{
-				_scroller.SetContentOffset(new PointF(0, 0), true);
+				_scroller.SetContentOffset(CGPoint.Empty, true);
 				_cell.LeftContextActions[(int)button.Tag].Activate();
 			}
 		}
@@ -777,7 +777,7 @@ namespace CustomCell.iOS
 					var weakItem = new WeakReference<ActionMenuItem>(item);
 					var action = UIAlertAction.Create(item.Text, UIAlertActionStyle.Default, a =>
 					{
-						_scroller.SetContentOffset(new PointF(0, 0), true);
+						_scroller.SetContentOffset(CGPoint.Empty, true);
 						ActionMenuItem mi;
 						if (weakItem.TryGetTarget(out mi))
 							mi.Activate();
@@ -890,7 +890,7 @@ namespace CustomCell.iOS
                 _leftMenuItems.Clear();
 
                 for (var i = 0; i < _rightButtons.Count; i++)
-					_leftButtons[i].Dispose();
+                    _rightButtons[i].Dispose();
 
 				_rightButtons.Clear();
 				_rightMenuItems.Clear();
@@ -948,11 +948,11 @@ namespace CustomCell.iOS
 			button.SetTitle(item.Text, UIControlState.Normal);
             if (!item.IsDestructive)
             {
-                button.SetBackgroundImage(NormalBackground, UIControlState.Normal);
+                button.BackgroundColor = item.BackgroundColor.ToUIColor();
             }
             else
             {
-                button.BackgroundColor = item.BackgroundColor.ToUIColor();
+                button.SetBackgroundImage(DestructiveBackground, UIControlState.Normal);
             }
 			button.TitleEdgeInsets = new UIEdgeInsets(0, 15, 0, 15);
 
@@ -1019,7 +1019,7 @@ namespace CustomCell.iOS
 				if (buttonIndex == Items.Count)
 					return; // Cancel button
 
-				Scroller.SetContentOffset(new PointF(0, 0), true);
+				Scroller.SetContentOffset(CGPoint.Empty, true);
 
 				// do not activate a -1 index when dismissing by clicking outside the popover
 				if (buttonIndex >= 0)

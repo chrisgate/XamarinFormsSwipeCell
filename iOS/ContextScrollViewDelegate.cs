@@ -1,5 +1,9 @@
-﻿using System;
+﻿/*
+    Original Source : https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.iOS/ContextScrollViewDelegate.cs
+*/
+using System;
 using System.Collections.Generic;
+using CoreGraphics;
 using UIKit;
 using NSAction = System.Action;
 using PointF = CoreGraphics.CGPoint;
@@ -128,8 +132,11 @@ namespace CustomCell.iOS
             var leftWidth = _finalLeftButtonSize;
             var leftCount = _leftButtons.Count;
 
-			if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-				_container.Frame = new RectangleF(scrollView.Frame.Width, 0, scrollView.ContentOffset.X, scrollView.Frame.Height);
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            {
+                //TODO : iOS 8.0 이전 버전에서 확인 해야함.
+                _container.Frame = new RectangleF(scrollView.Frame.Width, 0, scrollView.ContentOffset.X, scrollView.Frame.Height);
+            }
 			else
 			{
                 if (scrollView.ContentOffset.X > 0.0f && rightCount > 0)
@@ -162,7 +169,7 @@ namespace CustomCell.iOS
                         var rect = b.Frame;
 						var x = -ileftoffset * ( leftCount - i  ) ;
                         b.Frame = new RectangleF(x, 0, ileftoffset, rect.Height);
-                        //b.Frame = new RectangleF(x , 0, leftWidth, rect.Height);
+                        //b.Frame = new RectangleF(x, 0, leftWidth, rect.Height);
                     }
                 }
 			}
@@ -273,7 +280,7 @@ namespace CustomCell.iOS
 			if (!s_scrollViewBeingScrolled.TryGetTarget(out scrollViewBeingScrolled) || ReferenceEquals(scrollViewBeingScrolled, scrollView) || !ReferenceEquals(((ContextScrollViewDelegate)scrollViewBeingScrolled.Delegate)._table, ((ContextScrollViewDelegate)scrollView.Delegate)._table))
 				return false;
 
-			scrollView.SetContentOffset(new PointF(0, 0), false);
+            scrollView.SetContentOffset(CGPoint.Empty, false);
 			return true;
 		}
 
@@ -368,14 +375,12 @@ namespace CustomCell.iOS
 
         void SetLeftButtonsShowing(bool show)
 		{
-			//SetRightButtonsShowing(false);
             for (var i = 0; i < _leftButtons.Count; i++)
 				_leftButtons[i].Hidden = !show;
 		}
 
 		void SetRightButtonsShowing(bool show)
 		{
-            //SetLeftButtonsShowing(false);
 			for (var i = 0; i < _rightButtons.Count; i++)
 				_rightButtons[i].Hidden = !show;
 		}

@@ -47,7 +47,7 @@ namespace CustomCell.iOS
 		bool OnShouldReceiveTouch(UIGestureRecognizer r, UITouch t)
 		{
 			var scrollPos = t.LocationInView(_scrollView);
-			var rect = new RectangleF(0, 0, _scrollView.ContentSize.Width, _scrollView.ContentSize.Height);
+            var rect = new RectangleF(-_scrollView.ContentInset.Left, 0, _scrollView.ContentSize.Width, _scrollView.ContentSize.Height);
 			return !rect.Contains(scrollPos);
 		}
 	}

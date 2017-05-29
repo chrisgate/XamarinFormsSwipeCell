@@ -18,7 +18,7 @@
 
                         </StackLayout>
                         <swipe:SwipeCell.RightContextActions>
-                            <local:ActionMenuItem Text="Right1"/>
+                            <local:ActionMenuItem Text="Right1" BackgroundColor="Red"/>
                             <local:ActionMenuItem Text="Right2"/>
                             <local:ActionMenuItem Text="Right3"/>
                             <local:ActionMenuItem Text="Right4"/>
