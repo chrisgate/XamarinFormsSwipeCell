@@ -4,6 +4,7 @@ using CustomCell.iOS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using UIKit;
+using Xamarin.Forms.Internals;
 
 [assembly: ExportRenderer(typeof(SwipeCell), typeof(SwipeiOSCellRender))]
 namespace CustomCell.iOS
@@ -14,21 +15,27 @@ namespace CustomCell.iOS
 
         public override UITableViewCell GetCell(Cell item, UITableViewCell reusableCell, UITableView tv)
         {
-            var result = base.GetCell(item, reusableCell, tv);
-            //WireUpForceUpdateSizeRequested(item, result, tv);
-
-            //return result;
             var swipeCell = (SwipeCell)item;
             cell = reusableCell as SwipeiOSCell;
 
-            if(cell == null)
+            if (cell == null)
             {
                 cell = new SwipeiOSCell(item.GetType().FullName, swipeCell);
             }
 
-            cell.Update(tv, swipeCell, result);
+            var nativeCell = base.GetCell(item, cell, tv);
+            var cellWithContent = nativeCell;
 
-            return cell;
+            cell.Update(tv, swipeCell, nativeCell);
+
+
+			if (cellWithContent != null)
+				cellWithContent.LayoutSubviews();
+            
+            nativeCell = cell;
+
+            return nativeCell;
         }
     }
 }
+;

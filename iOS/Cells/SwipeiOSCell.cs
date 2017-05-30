@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
     소스 참조 : https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.iOS/ContextActionCell.cs
 */
 using System;
@@ -59,11 +59,13 @@ namespace CustomCell.iOS
 
         public SwipeiOSCell(SwipeCell swipeCell) : base(UITableViewCellStyle.Default, Key)
         {
+            //SelectionStyle = UITableViewCellSelectionStyle.Gray;
             this.SwipeCell = swipeCell;
 		}
 
         public SwipeiOSCell(string templateId, SwipeCell swipeCell) : base(UITableViewCellStyle.Default, Key + templateId)
         {
+            //SelectionStyle = UITableViewCellSelectionStyle.Gray;
             this.SwipeCell = swipeCell;
         }
 
@@ -82,7 +84,7 @@ namespace CustomCell.iOS
 
             Update(_tableView, _cell, ContentCell);
 
-			if (ContentCell is SwipeiOSCell && ContentCell.Subviews.Length > 0 && Math.Abs(ContentCell.Subviews[0].Frame.Height - Bounds.Height) > 1)
+			if (ContentCell.Subviews.Length > 0 && Math.Abs(ContentCell.Subviews[0].Frame.Height - Bounds.Height) > 1)
 			{
 				// Something goes weird inside iOS where LayoutSubviews wont get called when updating the bounds if the user
 				// forces us to flip flop between a ContextActionCell and a normal cell in the middle of actually displaying the cell
@@ -130,12 +132,16 @@ namespace CustomCell.iOS
 			}
 		}
 
+		public override void AwakeFromNib()
+		{
+			base.AwakeFromNib();
+		}
+
 		public override SizeF SizeThatFits(SizeF size)
 		{
 			return ContentCell.SizeThatFits(size);
 		}
 
-		
         public void Update(UITableView tableView, SwipeCell cell, UITableViewCell nativeCell)
         {
             var recycling = tableView.DequeueReusableCell(ReuseIdentifier) != null ? true : false;
@@ -859,6 +865,25 @@ namespace CustomCell.iOS
 		}
 		#endregion //LeftButton Etc Setting
 
+		UIButton GetButton(ActionMenuItem item)
+		{
+			var button = new UIButton(new RectangleF(0, 0, 1, 1));
+			button.SetTitle(item.Text, UIControlState.Normal);
+			if (!item.IsDestructive)
+			{
+				button.BackgroundColor = item.BackgroundColor.ToUIColor();
+			}
+			else
+			{
+				button.SetBackgroundImage(DestructiveBackground, UIControlState.Normal);
+			}
+			button.TitleEdgeInsets = new UIEdgeInsets(0, 15, 0, 15);
+
+			button.Enabled = true;
+
+			return button;
+		}
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
@@ -942,25 +967,6 @@ namespace CustomCell.iOS
 			_tableView.AddGestureRecognizer(new SelectGestureRecognizer());
 		}
 
-		UIButton GetButton(ActionMenuItem item)
-		{
-			var button = new UIButton(new RectangleF(0, 0, 1, 1));
-			button.SetTitle(item.Text, UIControlState.Normal);
-            if (!item.IsDestructive)
-            {
-                button.BackgroundColor = item.BackgroundColor.ToUIColor();
-            }
-            else
-            {
-                button.SetBackgroundImage(DestructiveBackground, UIControlState.Normal);
-            }
-			button.TitleEdgeInsets = new UIEdgeInsets(0, 15, 0, 15);
-
-			button.Enabled = true;
-
-			return button;
-		}
-
 		class SelectGestureRecognizer : UITapGestureRecognizer
 		{
 			NSIndexPath _lastPath;
@@ -976,7 +982,7 @@ namespace CustomCell.iOS
 					if (_lastPath == null)
 						return false;
 
-                    var cell = table.CellAt(_lastPath) as SwipeiOSCell;
+                    var cell = table.CellAt(_lastPath) ;//as SwipeiOSCell;
 
 					return cell != null;
 				};

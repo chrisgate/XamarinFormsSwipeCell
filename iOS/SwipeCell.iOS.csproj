@@ -28,6 +28,7 @@
     <MtouchArch>i386, x86_64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
+    <AssemblyName>SwipeCell.iOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,7 @@
     <MtouchArch>i386, x86_64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
+    <AssemblyName>SwipeCell.iOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -97,9 +99,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CustomCell\CustomCell.csproj">
+    <ProjectReference Include="..\CustomCell\SwipeCell.csproj">
       <Project>{734AF65A-B369-42BB-B5A2-50DD92F48540}</Project>
-      <Name>CustomCell</Name>
+      <Name>SwipeCell</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
