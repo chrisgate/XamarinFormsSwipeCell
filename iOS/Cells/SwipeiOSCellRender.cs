@@ -28,7 +28,6 @@ namespace CustomCell.iOS
 
             cell.Update(tv, swipeCell, nativeCell);
 
-
 			if (cellWithContent != null)
 				cellWithContent.LayoutSubviews();
             

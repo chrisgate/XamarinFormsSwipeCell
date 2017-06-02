@@ -164,6 +164,7 @@ namespace CustomCell.iOS
 			nativeCell.Frame = new RectangleF(0, 0, width, height);
 			nativeCell.SetNeedsLayout();
 
+
 			var handler = new PropertyChangedEventHandler(OnMenuItemPropertyChanged);
 
 			_tableView = tableView;
