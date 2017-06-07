@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xamarin.Forms;
 
-namespace CustomCell.Cells
+namespace CustomCell
 {
     public class SwipeCell : ViewCell
     {

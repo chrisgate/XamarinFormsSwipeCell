@@ -1,11 +1,11 @@
-﻿/*
+﻿﻿/*
     소스 참조 : https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.iOS/ContextActionCell.cs
 */
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Foundation;
-using CustomCell.Cells;
+using CustomCell;
 using CustomCell.iOS.Resources;
 using Xamarin.Forms;
 using PointF = CoreGraphics.CGPoint;
@@ -30,7 +30,6 @@ namespace CustomCell.iOS
 		readonly List<ActionMenuItem> _rightMenuItems = new List<ActionMenuItem>();
 
         public SwipeCell SwipeCell { get; private set; }
-		public Element Element => SwipeCell;
 
 		SwipeCell _cell;
 		UIButton _rightMoreButton;
@@ -40,7 +39,7 @@ namespace CustomCell.iOS
 
 		static SwipeiOSCell()
 		{
-			var rect = new RectangleF(0, 0, 1, 1);
+            var rect = new RectangleF(0, 0, 1, 1);
 			var size = rect.Size;
 
 			UIGraphics.BeginImageContext(size);
@@ -67,6 +66,20 @@ namespace CustomCell.iOS
             this.SwipeCell = swipeCell;
         }
 
+		Element INativeElementView.Element
+		{
+			get
+			{
+				var boxedCell = ContentCell as INativeElementView;
+				if (boxedCell == null)
+				{
+					throw new InvalidOperationException($"Implement {nameof(INativeElementView)} on cell renderer: {ContentCell.GetType().AssemblyQualifiedName}");
+				}
+
+				return boxedCell.Element;
+			}
+		}
+
 		public void Close()
 		{
 			_scroller.ContentOffset = new PointF(0, 0);
@@ -82,7 +95,7 @@ namespace CustomCell.iOS
 
             Update(_tableView, _cell, ContentCell);
 
-			if (ContentCell is SwipeiOSCell && ContentCell.Subviews.Length > 0 && Math.Abs(ContentCell.Subviews[0].Frame.Height - Bounds.Height) > 1)
+			if (ContentCell.Subviews.Length > 0 && Math.Abs(ContentCell.Subviews[0].Frame.Height - Bounds.Height) > 1)
 			{
 				// Something goes weird inside iOS where LayoutSubviews wont get called when updating the bounds if the user
 				// forces us to flip flop between a ContextActionCell and a normal cell in the middle of actually displaying the cell
@@ -130,17 +143,21 @@ namespace CustomCell.iOS
 			}
 		}
 
+		public override void AwakeFromNib()
+		{
+			base.AwakeFromNib();
+		}
+
 		public override SizeF SizeThatFits(SizeF size)
 		{
 			return ContentCell.SizeThatFits(size);
 		}
 
-		
         public void Update(UITableView tableView, SwipeCell cell, UITableViewCell nativeCell)
         {
             var recycling = tableView.DequeueReusableCell(ReuseIdentifier) != null ? true : false;
 
-            if(_cell != null && recycling)    
+            if(_cell != cell && recycling)    
 			{
                 if (_cell != null)
                 {
@@ -157,6 +174,7 @@ namespace CustomCell.iOS
 
 			nativeCell.Frame = new RectangleF(0, 0, width, height);
 			nativeCell.SetNeedsLayout();
+
 
 			var handler = new PropertyChangedEventHandler(OnMenuItemPropertyChanged);
 
@@ -194,7 +212,7 @@ namespace CustomCell.iOS
             _leftMenuItems.AddRange(cell.LeftContextActions);
             _rightMenuItems.AddRange(cell.RightContextActions);
 
-			SwipeCell = _cell = cell;
+			_cell = cell;
 
 			if (!recycling)
 			{
@@ -208,7 +226,6 @@ namespace CustomCell.iOS
 				_scroller = new UIScrollView(new RectangleF(0, 0, width, height));
 				_scroller.ScrollsToTop = false;
 				_scroller.ShowsHorizontalScrollIndicator = false;
-
 				_scroller.PreservesSuperviewLayoutMargins = true;
 
 				ContentView.AddSubview(_scroller);
@@ -859,6 +876,25 @@ namespace CustomCell.iOS
 		}
 		#endregion //LeftButton Etc Setting
 
+		UIButton GetButton(ActionMenuItem item)
+		{
+			var button = new UIButton(new RectangleF(0, 0, 1, 1));
+			button.SetTitle(item.Text, UIControlState.Normal);
+			if (!item.IsDestructive)
+			{
+				button.BackgroundColor = item.BackgroundColor.ToUIColor();
+			}
+			else
+			{
+				button.SetBackgroundImage(DestructiveBackground, UIControlState.Normal);
+			}
+			button.TitleEdgeInsets = new UIEdgeInsets(0, 15, 0, 15);
+
+			button.Enabled = true;
+
+			return button;
+		}
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
@@ -942,25 +978,6 @@ namespace CustomCell.iOS
 			_tableView.AddGestureRecognizer(new SelectGestureRecognizer());
 		}
 
-		UIButton GetButton(ActionMenuItem item)
-		{
-			var button = new UIButton(new RectangleF(0, 0, 1, 1));
-			button.SetTitle(item.Text, UIControlState.Normal);
-            if (!item.IsDestructive)
-            {
-                button.BackgroundColor = item.BackgroundColor.ToUIColor();
-            }
-            else
-            {
-                button.SetBackgroundImage(DestructiveBackground, UIControlState.Normal);
-            }
-			button.TitleEdgeInsets = new UIEdgeInsets(0, 15, 0, 15);
-
-			button.Enabled = true;
-
-			return button;
-		}
-
 		class SelectGestureRecognizer : UITapGestureRecognizer
 		{
 			NSIndexPath _lastPath;
@@ -976,7 +993,7 @@ namespace CustomCell.iOS
 					if (_lastPath == null)
 						return false;
 
-                    var cell = table.CellAt(_lastPath) as SwipeiOSCell;
+                    var cell = table.CellAt(_lastPath) ;//as SwipeiOSCell;
 
 					return cell != null;
 				};
@@ -993,6 +1010,11 @@ namespace CustomCell.iOS
 				if (!selector._lastPath.Equals(table.IndexPathForSelectedRow))
 					table.SelectRow(selector._lastPath, false, UITableViewScrollPosition.None);
 				table.Source.RowSelected(table, selector._lastPath);
+
+				//cell 선택시 backgroundcolor 변경
+				var cell = table.VisibleCells[selector._lastPath.Row] as SwipeiOSCell;
+				if (cell != null)
+					cell.ContentCell.BackgroundColor = UIColor.Clear;
 			}
 		}
 

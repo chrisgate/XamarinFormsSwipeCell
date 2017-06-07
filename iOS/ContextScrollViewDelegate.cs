@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
     Original Source : https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.iOS/ContextScrollViewDelegate.cs
 */
 using System;
@@ -367,6 +367,7 @@ namespace CustomCell.iOS
 
 			var cell = GetContextCell(scrollView);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.Default;
+            //cell.SelectionStyle = UITableViewCellSelectionStyle.Gray;
 			cell.SetSelected(true, false);
 
 			scrollView.Superview.Superview.InsertSubview(_backgroundView, 0);

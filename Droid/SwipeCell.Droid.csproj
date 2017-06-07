@@ -7,7 +7,7 @@
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>CustomCell.Droid</RootNamespace>
-    <AssemblyName>CustomCell.Droid</AssemblyName>
+    <AssemblyName>SwipeCell.Droid</AssemblyName>
     <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
@@ -83,9 +83,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CustomCell\CustomCell.csproj">
+    <ProjectReference Include="..\CustomCell\SwipeCell.csproj">
       <Project>{734AF65A-B369-42BB-B5A2-50DD92F48540}</Project>
-      <Name>CustomCell</Name>
+      <Name>SwipeCell</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
