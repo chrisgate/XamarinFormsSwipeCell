@@ -41,6 +41,7 @@
     <Compile Include="Cells\SwipeCell.cs" />
     <Compile Include="ActionMenuItem.cs" />
     <Compile Include="DataSource.cs" />
+    <Compile Include="SwipeListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Cells\" />

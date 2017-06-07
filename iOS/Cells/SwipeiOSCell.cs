@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Foundation;
-using CustomCell.Cells;
+using CustomCell;
 using CustomCell.iOS.Resources;
 using Xamarin.Forms;
 using PointF = CoreGraphics.CGPoint;
@@ -30,7 +30,6 @@ namespace CustomCell.iOS
 		readonly List<ActionMenuItem> _rightMenuItems = new List<ActionMenuItem>();
 
         public SwipeCell SwipeCell { get; private set; }
-		public Element Element => SwipeCell;
 
 		SwipeCell _cell;
 		UIButton _rightMoreButton;
@@ -40,7 +39,7 @@ namespace CustomCell.iOS
 
 		static SwipeiOSCell()
 		{
-			var rect = new RectangleF(0, 0, 1, 1);
+            var rect = new RectangleF(0, 0, 1, 1);
 			var size = rect.Size;
 
 			UIGraphics.BeginImageContext(size);
@@ -59,15 +58,27 @@ namespace CustomCell.iOS
 
         public SwipeiOSCell(SwipeCell swipeCell) : base(UITableViewCellStyle.Default, Key)
         {
-            //SelectionStyle = UITableViewCellSelectionStyle.Gray;
             this.SwipeCell = swipeCell;
 		}
 
         public SwipeiOSCell(string templateId, SwipeCell swipeCell) : base(UITableViewCellStyle.Default, Key + templateId)
         {
-            //SelectionStyle = UITableViewCellSelectionStyle.Gray;
             this.SwipeCell = swipeCell;
         }
+
+		Element INativeElementView.Element
+		{
+			get
+			{
+				var boxedCell = ContentCell as INativeElementView;
+				if (boxedCell == null)
+				{
+					throw new InvalidOperationException($"Implement {nameof(INativeElementView)} on cell renderer: {ContentCell.GetType().AssemblyQualifiedName}");
+				}
+
+				return boxedCell.Element;
+			}
+		}
 
 		public void Close()
 		{
@@ -146,7 +157,7 @@ namespace CustomCell.iOS
         {
             var recycling = tableView.DequeueReusableCell(ReuseIdentifier) != null ? true : false;
 
-            if(_cell != null && recycling)    
+            if(_cell != cell && recycling)    
 			{
                 if (_cell != null)
                 {
@@ -201,7 +212,7 @@ namespace CustomCell.iOS
             _leftMenuItems.AddRange(cell.LeftContextActions);
             _rightMenuItems.AddRange(cell.RightContextActions);
 
-			SwipeCell = _cell = cell;
+			_cell = cell;
 
 			if (!recycling)
 			{
@@ -215,7 +226,6 @@ namespace CustomCell.iOS
 				_scroller = new UIScrollView(new RectangleF(0, 0, width, height));
 				_scroller.ScrollsToTop = false;
 				_scroller.ShowsHorizontalScrollIndicator = false;
-
 				_scroller.PreservesSuperviewLayoutMargins = true;
 
 				ContentView.AddSubview(_scroller);
@@ -1000,6 +1010,11 @@ namespace CustomCell.iOS
 				if (!selector._lastPath.Equals(table.IndexPathForSelectedRow))
 					table.SelectRow(selector._lastPath, false, UITableViewScrollPosition.None);
 				table.Source.RowSelected(table, selector._lastPath);
+
+				//cell 선택시 backgroundcolor 변경
+				var cell = table.VisibleCells[selector._lastPath.Row] as SwipeiOSCell;
+				if (cell != null)
+					cell.ContentCell.BackgroundColor = UIColor.Clear;
 			}
 		}
 

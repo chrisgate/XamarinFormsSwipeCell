@@ -134,6 +134,7 @@
     <Compile Include="Resources\StringResources.Designer.cs">
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SwipeiOSViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StringResources.resx">

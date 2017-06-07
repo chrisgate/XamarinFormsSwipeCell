@@ -1,5 +1,5 @@
-﻿using System;
-using CustomCell.Cells;
+﻿﻿using System;
+using CustomCell;
 using CustomCell.iOS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
@@ -23,13 +23,9 @@ namespace CustomCell.iOS
                 cell = new SwipeiOSCell(item.GetType().FullName, swipeCell);
             }
 
-            var nativeCell = base.GetCell(item, cell, tv);
-            var cellWithContent = nativeCell;
+            var nativeCell = base.GetCell(item, reusableCell, tv);
 
             cell.Update(tv, swipeCell, nativeCell);
-
-			if (cellWithContent != null)
-				cellWithContent.LayoutSubviews();
             
             nativeCell = cell;
 
