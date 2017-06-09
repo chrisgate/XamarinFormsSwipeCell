@@ -66,19 +66,21 @@ namespace CustomCell.iOS
             this.SwipeCell = swipeCell;
         }
 
-		Element INativeElementView.Element
-		{
-			get
-			{
-				var boxedCell = ContentCell as INativeElementView;
-				if (boxedCell == null)
-				{
-					throw new InvalidOperationException($"Implement {nameof(INativeElementView)} on cell renderer: {ContentCell.GetType().AssemblyQualifiedName}");
-				}
+        public Element Element => SwipeCell;
 
-				return boxedCell.Element;
-			}
-		}
+		//Element INativeElementView.Element
+		//{
+		//	get
+		//	{
+		//		var boxedCell = ContentCell as INativeElementView;
+		//		if (boxedCell == null)
+		//		{
+		//			throw new InvalidOperationException($"Implement {nameof(INativeElementView)} on cell renderer: {ContentCell.GetType().AssemblyQualifiedName}");
+		//		}
+
+		//		return boxedCell.Element;
+		//	}
+		//}
 
 		public void Close()
 		{
@@ -114,35 +116,7 @@ namespace CustomCell.iOS
 			get { return (ContextScrollViewDelegate)_scroller.Delegate; }
 		}
 
-		// Either the LeftButton or RightButton is 'open'
-		public bool IsOpen
-		{
-			get
-			{
-				return IsLeftOpen || IsRightOpen;
-			}
-		}
-
-
-		// Use the ContentOffset of the ScrollView to determine whether or not the LeftButton is 'open'
-		public bool IsLeftOpen
-		{
-			get
-			{
-				return _scroller.ContentOffset != CGPoint.Empty && _scroller.ContentOffset.X < 0f;
-			}
-		}
-
-
-		// Use the ContentOffset of the ScrollView to determine whether or not the RightButton is 'open'
-		public bool IsRightOpen
-		{
-			get
-			{
-				return _scroller.ContentOffset != CGPoint.Empty && _scroller.ContentOffset.X > 0f;
-			}
-		}
-
+		
 		public override void AwakeFromNib()
 		{
 			base.AwakeFromNib();
@@ -221,6 +195,9 @@ namespace CustomCell.iOS
                 ((INotifyCollectionChanged)_cell.RightContextActions).CollectionChanged += OnContextItemsChanged;
 			}
 
+            bool isLeftOpen = false;
+            bool isRightOpen = false;
+
 			if (_scroller == null)
 			{
 				_scroller = new UIScrollView(new RectangleF(0, 0, width, height));
@@ -233,6 +210,8 @@ namespace CustomCell.iOS
 			else
 			{
 				_scroller.Frame = new RectangleF(0, 0, width, height);
+                isLeftOpen = ScrollDelegate.IsLeftOpen;
+                isRightOpen = ScrollDelegate.IsRightOpen;
 
 				for (var i = 0; i < _rightButtons.Count; i++)
 				{
@@ -317,15 +296,15 @@ namespace CustomCell.iOS
 				}
 			}
 
-            _scroller.Delegate = new ContextScrollViewDelegate(container, _rightButtons, _leftButtons, IsRightOpen, IsLeftOpen);
+            _scroller.Delegate = new ContextScrollViewDelegate(container, _rightButtons, _leftButtons, isRightOpen, isLeftOpen);
             //slider area reset
             _scroller.ContentInset = new UIEdgeInsets(0.0f, leftTotalWidth, 0.0f, rightTotalWidth);
             _scroller.ContentSize =  new SizeF(totalWidth, height);
 
             //TODO : if 문 조건이 정확한지 확인해야함.
-            if (IsRightOpen && recycling)
+            if (isRightOpen)
                 _scroller.SetContentOffset(new PointF(ScrollDelegate.RightButtonsWidth , 0), false);
-            else if (IsLeftOpen && recycling)
+            else if (isLeftOpen)
                 _scroller.SetContentOffset(new PointF(-ScrollDelegate.LeftButtonsWidth, 0), false);
 			else
                 _scroller.SetContentOffset(CGPoint.Empty, false);
@@ -1011,8 +990,8 @@ namespace CustomCell.iOS
 					table.SelectRow(selector._lastPath, false, UITableViewScrollPosition.None);
 				table.Source.RowSelected(table, selector._lastPath);
 
-				//cell 선택시 backgroundcolor 변경
-				var cell = table.VisibleCells[selector._lastPath.Row] as SwipeiOSCell;
+                //cell 선택시 backgroundcolor 변경
+                var cell = table.CellAt(selector._lastPath) as SwipeiOSCell;
 				if (cell != null)
 					cell.ContentCell.BackgroundColor = UIColor.Clear;
 			}
