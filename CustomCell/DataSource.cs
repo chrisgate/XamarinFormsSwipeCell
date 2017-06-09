@@ -24,7 +24,6 @@ namespace CustomCell
 			l.Add(new DataSource("Asparagus", "Vegetables", "Vegetables"));
 			l.Add(new DataSource("Avocados", "Vegetables", "Vegetables"));
 			l.Add(new DataSource("Beetroots", "Vegetables", "Vegetables"));
-			/*
             l.Add(new DataSource("Capsicum", "Vegetables", "Vegetables"));
 			l.Add(new DataSource("Broccoli", "Vegetables", "Vegetables"));
 			l.Add(new DataSource("Brussel sprouts", "Vegetables", "Vegetables"));
@@ -112,7 +111,7 @@ namespace CustomCell
 			l.Add(new DataSource("Sage", "Herbs & Spices", "FlowerBuds"));
 			l.Add(new DataSource("Thyme", "Herbs & Spices", "FlowerBuds"));
 			l.Add(new DataSource("Turmeric", "Herbs & Spices", "FlowerBuds"));
-            */
+
 
 			return l;
 		}

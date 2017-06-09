@@ -9,6 +9,9 @@
     <StackLayout>
     	<Label Text="Welcome to Xamarin Forms!" VerticalOptions="Center" HorizontalOptions="Center" />
         <swipe:SwipeListView x:Name="listView">
+            <!--x:Arguments>
+                <ListViewCachingStrategy>RecycleElement</ListViewCachingStrategy>
+            </x:Arguments-->
             <swipe:SwipeListView.ItemTemplate>
                     <DataTemplate>
                         <swipe:SwipeCell>

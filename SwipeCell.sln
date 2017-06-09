@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwipeCell", "SwipeCell\SwipeCell.csproj", "{734AF65A-B369-42BB-B5A2-50DD92F48540}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwipeCell", "CustomCell\SwipeCell.csproj", "{734AF65A-B369-42BB-B5A2-50DD92F48540}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwipeCell.iOS", "iOS\SwipeCell.iOS.csproj", "{220564B7-9586-4196-8116-B1CD6D9B0101}"
 EndProject
