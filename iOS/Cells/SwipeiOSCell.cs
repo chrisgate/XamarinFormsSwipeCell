@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿﻿﻿/*
     소스 참조 : https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.iOS/ContextActionCell.cs
 */
 using System;
@@ -67,20 +67,6 @@ namespace CustomCell.iOS
         }
 
         public Element Element => SwipeCell;
-
-		//Element INativeElementView.Element
-		//{
-		//	get
-		//	{
-		//		var boxedCell = ContentCell as INativeElementView;
-		//		if (boxedCell == null)
-		//		{
-		//			throw new InvalidOperationException($"Implement {nameof(INativeElementView)} on cell renderer: {ContentCell.GetType().AssemblyQualifiedName}");
-		//		}
-
-		//		return boxedCell.Element;
-		//	}
-		//}
 
 		public void Close()
 		{

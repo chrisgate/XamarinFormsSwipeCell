@@ -160,16 +160,18 @@ namespace CustomCell.iOS
                     SetLeftButtonsShowing(true);
                     var ileftoffset = -scrollView.ContentOffset.X / (float)leftCount;
 
-                    //if (ileftoffset > leftWidth)
-					//	leftWidth = ileftoffset + 1;
-                    
+                    if (ileftoffset > leftWidth)
+						leftWidth = ileftoffset + 1;
+
+                    //스크롤시 버튼 사이즈 조절 <- 약간의 에니메이션 효과
+                    //아래 코드 주석 처리시 버튼 사이즈 변경 없이 스크롤
                     for (var i = 0; i < leftCount ; i++)
                     {
                         var b = _leftButtons[i];
                         var rect = b.Frame;
-						var x = -ileftoffset * ( leftCount - i  ) ;
-                        b.Frame = new RectangleF(x, 0, ileftoffset, rect.Height);
-                        //b.Frame = new RectangleF(x, 0, leftWidth, rect.Height);
+                        var x = -(leftCount - (i + 1)) * ileftoffset;
+                        b.Frame = new RectangleF(x - leftWidth, 0, leftWidth, rect.Height);
+                        //b.Frame = new RectangleF(x, 0, -ileftoffset, rect.Height);
                     }
                 }
 			}
